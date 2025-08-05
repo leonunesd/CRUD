@@ -1,83 +1,76 @@
 const Fornecedor = require('../models/fornecedorModel');
 
 const fornecedorController = {
-    createFornecedor: (req, res) => {
-        const newFornecedor = {
-            nome: req.body.nome
-        };
-
-        Fornecedor.create(newFornecedor, (err, fornecedorId) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+    createFornecedor: async (req, res) => {
+        try {
+            await Fornecedor.create({ nome: req.body.nome });
             res.redirect('/fornecedores');
-        });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
     },
 
-    getFornecedorById: (req, res) => {
-        const fornecedorId = req.params.id;
-
-        Fornecedor.findById(fornecedorId, (err, fornecedor) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+    getFornecedorById: async (req, res) => {
+        try {
+            const fornecedor = await Fornecedor.findByPk(req.params.id);
             if (!fornecedor) {
                 return res.status(404).json({ message: 'Fornecedor not found' });
             }
             res.render('fornecedores/show', { fornecedor });
-        });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
     },
 
-    getAllFornecedores: (req, res) => {
-        Fornecedor.getAll((err, fornecedores) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+    getAllFornecedores: async (req, res) => {
+        try {
+            const fornecedores = await Fornecedor.findAll();
             res.render('fornecedores/index', { fornecedores });
-        });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
     },
 
     renderCreateForm: (req, res) => {
         res.render('fornecedores/create');
     },
 
-    renderEditForm: (req, res) => {
-        const fornecedorId = req.params.id;
-
-        Fornecedor.findById(fornecedorId, (err, fornecedor) => {
-            if (err) {
-                return res.status(500).json({ error: err });
-            }
+    renderEditForm: async (req, res) => {
+        try {
+            const fornecedor = await Fornecedor.findByPk(req.params.id);
             if (!fornecedor) {
                 return res.status(404).json({ message: 'Fornecedor not found' });
             }
             res.render('fornecedores/edit', { fornecedor });
-        });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
     },
 
-    updateFornecedor: (req, res) => {
-        const fornecedorId = req.params.id;
-        const updatedFornecedor = {
-            nome: req.body.nome
-        };
-
-        Fornecedor.update(fornecedorId, updatedFornecedor, (err) => {
-            if (err) {
-                return res.status(500).json({ error: err });
+    updateFornecedor: async (req, res) => {
+        try {
+            const fornecedor = await Fornecedor.findByPk(req.params.id);
+            if (!fornecedor) {
+                return res.status(404).json({ message: 'Fornecedor not found' });
             }
+            await fornecedor.update({ nome: req.body.nome });
             res.redirect('/fornecedores');
-        });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
     },
 
-    deleteFornecedor: (req, res) => {
-        const fornecedorId = req.params.id;
-
-        Fornecedor.delete(fornecedorId, (err) => {
-            if (err) {
-                return res.status(500).json({ error: err });
+    deleteFornecedor: async (req, res) => {
+        try {
+            const fornecedor = await Fornecedor.findByPk(req.params.id);
+            if (!fornecedor) {
+                return res.status(404).json({ message: 'Fornecedor not found' });
             }
+            await fornecedor.destroy();
             res.redirect('/fornecedores');
-        });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
     }
 };
 
