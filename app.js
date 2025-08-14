@@ -1,3 +1,11 @@
+const sequelize = require('./config/db');
+const models = require('./models');
+
+sequelize.sync({ alter: true })
+  .then(() => console.log('Banco sincronizado'))
+  .catch(err => console.error('Erro ao sincronizar:', err));
+
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');

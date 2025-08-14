@@ -1,4 +1,4 @@
-const Fornecedor = require('../models/fornecedorModel');
+const { Categoria } = require('../models');
 
 const fornecedorController = {
     createFornecedor: async (req, res) => {
